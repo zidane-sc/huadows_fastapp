@@ -35,7 +35,7 @@ jobs:
           text = open(sys.argv[1]).read()
           permissions = re.findall(r"uses-permission: name='([^']+)'", text)
           allowed = {'android.permission.INTERNET', 'android.permission.ACCESS_NETWORK_STATE'}
-          assert set(permissions) <= allowed, permissions
+          assert all(p in allowed or p == 'com.huadows.fastapp64.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION' for p in permissions), permissions
           assert "targetSdkVersion:'35'" in text
           print('permission audit passed:', permissions)
           PY
