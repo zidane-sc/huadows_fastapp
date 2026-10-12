@@ -310,8 +310,12 @@
 
         <service
             android:name="top.niunaijun.blackbox.core.system.DaemonService"
+            android:foregroundServiceType="specialUse"
             android:exported="false"
-            android:process="@string/black_box_service_name" />
+            android:process="@string/black_box_service_name">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps the local app sandbox process alive while a cloned app is running" />
+        </service>
 
         <service
             android:name="top.niunaijun.blackbox.core.system.DaemonService$DaemonInnerService"
