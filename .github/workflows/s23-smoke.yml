@@ -28,7 +28,8 @@ jobs:
         run: |
           APK=app/build/outputs/apk/FastApp64/debug/app-FastApp64-debug.apk
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -E 'package:|sdkVersion:|targetSdkVersion:|native-code:'
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -E 'package:|sdkVersion:|targetSdkVersion:|native-code:|uses-permission:'
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump xmltree "$APK" AndroidManifest.xml | grep -E 'android:(debuggable|usesCleartextTraffic|allowBackup)|MANAGE_EXTERNAL_STORAGE' || true
       - uses: actions/upload-artifact@v4
         with:
           name: s23-clone-smoke-debug
