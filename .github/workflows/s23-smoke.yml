@@ -28,7 +28,17 @@ jobs:
         run: |
           APK=app/build/outputs/apk/FastApp64/debug/app-FastApp64-debug.apk
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -E 'package:|sdkVersion:|targetSdkVersion:|native-code:|uses-permission:'
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > "$RUNNER_TEMP/badging.txt"
+          grep -E 'package:|sdkVersion:|targetSdkVersion:|native-code:|uses-permission:' "$RUNNER_TEMP/badging.txt"
+          python3 - "$RUNNER_TEMP/badging.txt" <<'PY'
+          import re, sys
+          text = open(sys.argv[1]).read()
+          permissions = re.findall(r"uses-permission: name='([^']+)'", text)
+          allowed = {'android.permission.INTERNET', 'android.permission.ACCESS_NETWORK_STATE'}
+          assert set(permissions) <= allowed, permissions
+          assert "targetSdkVersion:'35'" in text
+          print('permission audit passed:', permissions)
+          PY
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump xmltree "$APK" AndroidManifest.xml | grep -E 'android:(debuggable|usesCleartextTraffic|allowBackup)|MANAGE_EXTERNAL_STORAGE' || true
       - uses: actions/upload-artifact@v4
         with:
