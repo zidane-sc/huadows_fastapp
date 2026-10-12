@@ -121,17 +121,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFab(FloatingActionButton fab) {
-        fab.setOnClickListener(v -> {
-            if (requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                openFilePicker();
-            } else {
-                mPermissionLauncher.launch(STORAGE_PERMISSIONS);
-            }
-        });
+        fab.setOnClickListener(v -> openFilePicker());
     }
 
     private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/vnd.android.package-archive");
         mApkPickerLauncher.launch(intent);
     }
